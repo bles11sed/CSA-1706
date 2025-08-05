@@ -1,0 +1,32 @@
+from queue import PriorityQueue
+
+def astar(start, goal, graph, h):
+    open = PriorityQueue()
+    open.put((0, start))
+    came_from = {}
+    g = {start: 0}
+    while not open.empty():
+        _, current = open.get()
+        if current == goal:
+            path = []
+            while current:
+                path.append(current)
+                current = came_from.get(current)
+            print("Path:", path[::-1])
+            return
+        for neighbor, cost in graph[current]:
+            new_g = g[current] + cost
+            if neighbor not in g or new_g < g[neighbor]:
+                g[neighbor] = new_g
+                f = new_g + h[neighbor]
+                open.put((f, neighbor))
+                came_from[neighbor] = current
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 5)],
+    'C': [('D', 1)],
+    'D': []
+}
+h = {'A': 7, 'B': 6, 'C': 2, 'D': 0}
+astar('A', 'D', graph, h)
